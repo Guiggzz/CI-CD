@@ -1,7 +1,10 @@
-name: Build manuel
+name: Build
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
@@ -17,9 +20,13 @@ jobs:
           test -f index.html
           test -f Dockerfile
 
-      - name: Tester nginx
+      - name: Tester le service
         run: |
           # construction d'image docker
           docker build -t ci-cd-nginx-test .
           # lancement du conteneur
-          docker run --rm ci-cd-nginx-test nginx -t
+          docker run -d -p 8080:80 --name nginx-test ci-cd-nginx-test
+          # test http
+          curl -f http://localhost:8080/
+          curl -f http://localhost:8080/health
+          docker stop nginx-test
