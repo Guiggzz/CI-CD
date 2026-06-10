@@ -26,6 +26,7 @@ jobs:
           docker build -t ci-cd-nginx-test .
           # lancement du conteneur
           docker run -d -p 8080:80 --name nginx-test ci-cd-nginx-test
+          sleep 2
           # test http
           curl -f http://localhost:8080/
           curl -f http://localhost:8080/health
