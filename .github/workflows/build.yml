@@ -1,0 +1,25 @@
+name: Build manuel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Vérifier les fichiers
+        run: |
+          test -f nginx.conf
+          test -f index.html
+          test -f Dockerfile
+
+      - name: Tester nginx
+        run: |
+          # construction d'image docker
+          docker build -t ci-cd-nginx-test .
+          # lancement du conteneur
+          docker run --rm ci-cd-nginx-test nginx -t
